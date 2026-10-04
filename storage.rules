@@ -1,0 +1,31 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() { return request.auth != null && request.auth.token.admin == true; }
+
+    // Payment screenshots: payments/{userId}/{requestId}/{file}
+    match /payments/{userId}/{requestId}/{file} {
+      allow read: if isAdmin() || (request.auth != null && request.auth.uid == userId);
+      allow create: if request.auth != null && request.auth.uid == userId
+        && request.resource.size < 10 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+      allow update, delete: if false;
+    }
+
+    // Final reports: readable by admin and the request owner.
+    match /reports/{requestId}/{file} {
+      allow read: if isAdmin() || (request.auth != null &&
+        firestore.get(/databases/(default)/documents/requests/$(requestId)).data.userId == request.auth.uid);
+      allow write: if isAdmin()
+        && request.resource.size < 25 * 1024 * 1024
+        && request.resource.contentType == 'application/pdf';
+    }
+
+    // UPI QR and other app config assets.
+    match /config/{file} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin() && request.resource.contentType.matches('image/.*');
+    }
+  }
+}

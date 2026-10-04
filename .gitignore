@@ -1,0 +1,40 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Firebase
+app/google-services.json
+functions/node_modules
+functions/lib
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Release signing (never commit)
+keystore.properties
+*.jks
+*.keystore
+
+# Kept out of the public repo
+SPEC.internal.md
+functions/.env.*
+!functions/.env.example
+
+# Build / tool output
+.kotlin/
+app/release/
+store-listing/src/_build/
+__pycache__/
+/.idea/deploymentTargetSelector.xml

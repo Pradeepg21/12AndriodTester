@@ -1,0 +1,52 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=block" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { width: 1024px; height: 500px; overflow: hidden; font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+    background: linear-gradient(120deg, #4F46E5 0%, #7C3AED 45%, #C026D3 80%, #EC4899 100%); color: #fff; position: relative; }
+  .glow { position: absolute; border-radius: 50%; filter: blur(60px); opacity: .55; }
+  .ring { position: absolute; right: -120px; top: -160px; width: 720px; height: 720px; opacity: .13; }
+  .left { position: absolute; left: 64px; top: 64px; width: 560px; }
+  .brand { display: flex; align-items: center; gap: 14px; font-weight: 800; font-size: 26px; letter-spacing: -.3px; }
+  .brand img { width: 52px; height: 52px; border-radius: 14px; box-shadow: 0 6px 20px rgba(30,0,80,.35); }
+  .pill { display: inline-block; margin-top: 34px; padding: 7px 14px; border-radius: 99px; background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.35); font-size: 15px; font-weight: 700; letter-spacing: .4px; }
+  h1 { margin-top: 16px; font-size: 52px; line-height: 1.05; font-weight: 800; letter-spacing: -1.4px; }
+  h1 em { font-style: normal; color: #FDE68A; }
+  p { margin-top: 18px; font-size: 20px; line-height: 1.4; font-weight: 500; opacity: .92; }
+  .card { position: absolute; right: 64px; top: 92px; width: 300px; background: #fff; color: #1E1B4B; border-radius: 26px;
+    padding: 24px; box-shadow: 0 24px 60px rgba(30,0,80,.4); transform: rotate(3deg); }
+  .card .row { display: flex; justify-content: space-between; align-items: center; }
+  .card .app { font-weight: 800; font-size: 19px; }
+  .card .chip { font-size: 12px; font-weight: 700; color: #0D9488; background: #CCFBF1; padding: 5px 10px; border-radius: 99px; }
+  .card .day { margin-top: 18px; font-size: 44px; font-weight: 800; letter-spacing: -1px; }
+  .card .day span { font-size: 20px; color: #64748B; font-weight: 700; }
+  .bar { margin-top: 12px; height: 10px; border-radius: 9px; background: #EEF0FA; overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 64%; border-radius: 9px; background: linear-gradient(90deg, #4F46E5, #EC4899); }
+  .dots { margin-top: 20px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 9px; }
+  .dots b { height: 34px; border-radius: 50%; aspect-ratio: 1; background: linear-gradient(135deg, #6366F1, #A855F7);
+    display: grid; place-items: center; color: #fff; font-size: 15px; }
+  .card .foot { margin-top: 16px; font-size: 13px; color: #64748B; font-weight: 600; }
+</style></head>
+<body>
+  <div class="glow" style="width:420px;height:420px;left:-140px;bottom:-220px;background:#22D3EE"></div>
+  <div class="glow" style="width:360px;height:360px;right:120px;bottom:-240px;background:#FDE68A;opacity:.35"></div>
+  <img class="ring" src="glyph-white.svg">
+  <div class="left">
+    <div class="brand"><img src="icon-rounded.svg">Twelve Testers</div>
+    <div class="pill">NOT A TESTER SWAP</div>
+    <h1>12 real testers.<br><em>Production-ready</em><br>in 14–15 days.</h1>
+    <p>Submit your app, add 12 emails, track every day.</p>
+  </div>
+  <div class="card">
+    <div class="row"><div class="app">FitTrack</div><div class="chip">Testing</div></div>
+    <div class="day">Day 9 <span>of 14</span></div>
+    <div class="bar"><i></i></div>
+    <div class="dots"></div>
+    <div class="foot">12 of 12 testers opted in</div>
+  </div>
+  <script>
+    document.querySelector('.dots').innerHTML = '<b>✓</b>'.repeat(12);
+  </script>
+</body></html>

@@ -1,0 +1,112 @@
+rules_version = '2';
+
+// Security rules — SPEC.md §3, §4, §8, §10.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isAdmin() { return signedIn() && request.auth.token.admin == true; }
+    function isSelf(uid) { return signedIn() && request.auth.uid == uid; }
+    function changed() { return request.resource.data.diff(resource.data).affectedKeys(); }
+
+    // ---------- users ----------
+    match /users/{uid} {
+      allow read: if isSelf(uid) || isAdmin();
+      allow create: if isSelf(uid)
+        && request.resource.data.role == 'user'
+        && request.resource.data.deleted == false;
+      // Role and deletion are changed only by Cloud Functions (Admin SDK bypasses rules).
+      allow update: if isSelf(uid)
+        && changed().hasOnly(['name', 'whatsapp', 'photoUrl', 'fcmTokens', 'lastLoginAt']);
+      allow delete: if false;
+    }
+
+    // ---------- requests ----------
+    match /requests/{id} {
+      function owner() { return signedIn() && resource.data.userId == request.auth.uid; }
+
+      function detailKeys() {
+        return ['fullName', 'whatsapp', 'contactEmail', 'appName', 'packageName', 'optInLink', 'category', 'notes'];
+      }
+      function actorKeys() { return ['updatedAt', 'updatedBy', 'impersonatedBy']; }
+      function statusKeys() { return ['status', 'statusNote', 'statusHistory', 'resumeStatus', 'payment', 'refund']; }
+      function chatKeys() { return ['lastMessageAt', 'lastMessageBy', 'userLastReadAt']; }
+
+      function refundable(s) {
+        return s in ['PAYMENT_SUBMITTED', 'PAYMENT_VERIFIED', 'INTERNAL_VERIFICATION', 'EMAILS_SHARED', 'EMAILS_ADDED'];
+      }
+
+      // Transitions a user may make — SPEC.md §4 / §4.2.
+      function userTransitionOk() {
+        let from = resource.data.status;
+        let to = request.resource.data.status;
+        return from == to
+          || (from == 'PAYMENT_PENDING' && to == 'PAYMENT_SUBMITTED'
+              && request.resource.data.payment.screenshotUrl is string
+              && request.resource.data.payment.screenshotUrl.size() > 0)
+          || (from == 'EMAILS_SHARED' && to == 'EMAILS_ADDED')
+          || (from == 'NEEDS_INFO' && to == resource.data.resumeStatus && request.resource.data.resumeStatus == null)
+          || (from in ['SUBMITTED', 'PAYMENT_PENDING'] && to == 'CANCELLED')
+          || (to == 'REFUND_REQUESTED'
+              && (refundable(from)
+                  || (from in ['NEEDS_INFO', 'ON_HOLD'] && refundable(resource.data.resumeStatus))));
+      }
+
+      function userFieldsOk() {
+        let to = request.resource.data.status;
+        let from = resource.data.status;
+        return changed().hasOnly(detailKeys().concat(actorKeys()).concat(statusKeys()).concat(chatKeys()))
+          && (!('payment' in changed()) || to == 'PAYMENT_SUBMITTED')
+          && (!('refund' in changed()) || to == 'REFUND_REQUESTED')
+          && (!('resumeStatus' in changed()) || from == 'NEEDS_INFO')
+          // Details editable only before payment or when asked for info.
+          && (!changed().hasAny(detailKeys()) || from in ['SUBMITTED', 'PAYMENT_PENDING', 'NEEDS_INFO'])
+          && request.resource.data.userId == resource.data.userId;
+      }
+
+      allow read: if owner() || isAdmin();
+
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == 'PAYMENT_PENDING'
+        && request.resource.data.keys().hasOnly(
+             detailKeys().concat(actorKeys()).concat(['userId', 'status', 'statusNote', 'statusHistory', 'resumeStatus', 'payment', 'createdAt']));
+
+      allow update: if isAdmin() || (owner() && userFieldsOk() && userTransitionOk());
+      allow delete: if false;
+
+      match /messages/{mid} {
+        allow read: if isAdmin() || get(/databases/$(database)/documents/requests/$(id)).data.userId == request.auth.uid;
+        allow create: if signedIn()
+          && request.resource.data.senderId == request.auth.uid
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 4000
+          && ((isAdmin() && request.resource.data.senderRole == 'admin')
+              || (request.resource.data.senderRole == 'user'
+                  && get(/databases/$(database)/documents/requests/$(id)).data.userId == request.auth.uid));
+        allow update, delete: if false;
+      }
+
+      match /adminNotes/{nid} {
+        allow read, create: if isAdmin();
+        allow update, delete: if false;
+      }
+    }
+
+    // ---------- audit (append-only) ----------
+    match /auditLogs/{logId} {
+      allow read: if isAdmin();
+      allow create: if signedIn()
+        && request.resource.data.actorId == request.auth.uid
+        && request.resource.data.source == 'app';
+      allow update, delete: if false;
+    }
+
+    // ---------- config ----------
+    match /config/{doc} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+  }
+}
