@@ -62,9 +62,9 @@ private data class Page(
 private val pages = listOf(
     Page(
         Icons.Default.RocketLaunch,
-        "Production-ready in 14–15 days",
-        "Not a tester swap, not community favours. New Google Play personal developer accounts must run a closed test with at least 12 testers for 14 days before applying for production access — we provide the testers and run it for you.",
-        listOf("12 real, dedicated testers", "No testing other people's apps in return", "Full 14-day closed testing", "Final report with improvement suggestions"),
+        "Real testing, real feedback",
+        "12 dedicated testers install your app from your closed test, use it on their own devices over 14 days and report the bugs, crashes and usability issues they find. Not a tester swap — you never test other people's apps in return.",
+        listOf("12 real testers who actually use your app", "Bugs, crashes and UX feedback", "Full 14-day closed test", "Final report with recommended fixes"),
         Brush.linearGradient(listOf(Indigo, Violet)),
     ),
     Page(

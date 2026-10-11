@@ -19,7 +19,7 @@ STATUS_H, NAV_TOP = 121, 2274  # Pixel 8a insets (dumpsys window)
 
 # (raw capture, headline, sub-headline, dark background?)
 SLIDES = [
-    ("welcome-1", "Not a tester swap<br><em>12 real testers</em>", "Production-ready in 14–15 days — no favours, no waiting", True),
+    ("welcome-1", "Not a tester swap<br><em>12 real testers</em>", "Bugs, crashes and UX feedback from a real 14-day test", True),
     ("home-inprogress", "Every app<br><em>tracked live</em>", "Run several closed tests at once", False),
     ("detail-top", "<em>Day 9 of 14</em><br>at a glance", "Clear status and what to do next", True),
     ("form", "Submit in<br><em>two minutes</em>", "App name, package and opt-in link — done", False),

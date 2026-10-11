@@ -24,11 +24,11 @@ STATUS_H, NAV_TOP = 121, 2274
 SCENES = [
     ("intro", None, 0, 3.5, "Twelve Testers", "Not a tester swap. 12 real testers."),
     ("card", None, 0, 3.2, "Need 12 testers<br>for 14 days?", "Skip the tester swaps and group requests. We bring the testers."),
-    ("clip", "clip-welcome", 1.5, 8.5, "Production-ready<br><em>in 14–15 days</em>", "Dedicated testers — no favours, no waiting"),
+    ("clip", "clip-welcome", 1.5, 8.5, "Real testing<br><em>real feedback</em>", "Testers who actually use your app — no favours"),
     ("clip", "clip-form", 0.8, 9.0, "Submit your app<br><em>in two minutes</em>", "App name, package and opt-in link"),
     ("clip", "clip-track", 1.0, 10.0, "Track every day<br><em>of your 14-day test</em>", "Clear status and what to do next"),
     ("clip", "clip-chat", 0.6, 6.5, "Real people<br><em>replies in 4 hours</em>", "Chat with support on every request"),
-    ("outro", None, 0, 4.5, "Production-ready<br>in 14–15 days", "Twelve Testers — download now"),
+    ("outro", None, 0, 4.5, "Real testers.<br>Real feedback.", "Twelve Testers — download now"),
 ]
 
 FONT = '<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=block" rel="stylesheet">'

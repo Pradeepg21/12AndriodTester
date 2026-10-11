@@ -45,14 +45,22 @@ import com.satya.a12andriodtester.ui.Routes
 import com.satya.a12andriodtester.ui.components.GradientHeader
 import com.satya.a12andriodtester.ui.components.SectionCard
 import com.satya.a12andriodtester.ui.emailTo
+import com.satya.a12andriodtester.ui.openUrl
 import com.satya.a12andriodtester.ui.theme.Amber
 import com.satya.a12andriodtester.ui.theme.Indigo
 import com.satya.a12andriodtester.ui.theme.Sky
 import com.satya.a12andriodtester.ui.theme.Slate
 
+/** Hosted from docs/ on GitHub Pages. */
+private const val PRIVACY_POLICY_URL = "https://pradeepg21.github.io/12AndriodTester/privacy-policy.html"
+
 private val faqs = listOf(
     "Why do I need 12 testers?" to
         "Google Play requires new personal developer accounts to run a closed test with at least 12 testers who stay opted in for 14 days in a row before you can apply for production access.",
+    "What do the testers do?" to
+        "They install your app from your closed test and use its main features on their own devices during the 14 days, noting bugs, crashes and usability issues. Everything they find goes into your final report.",
+    "Does this guarantee production access?" to
+        "No. Google decides on production access. We run a genuine closed test and give you feedback to improve your app before you apply.",
     "How do I pay?" to
         "Open your request and tap “Pay now”. Scan the UPI QR with any UPI app, pay the amount shown, then upload the payment screenshot in the next step.",
     "When will I get the tester emails?" to
@@ -105,6 +113,10 @@ fun HelpScreen(nav: NavController) {
             }
             SectionCard(title = "About", icon = Icons.Default.Info, accent = Slate) {
                 Text("Twelve Testers • Version ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
+                OutlinedButton(
+                    onClick = { context.openUrl(PRIVACY_POLICY_URL) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text("Privacy policy") }
             }
         }
     }

@@ -17,8 +17,8 @@ android {
         minSdk = 26
         targetSdk = 37
         // Bump on EVERY code change — see SPEC.md §13.
-        versionCode = 7
-        versionName = "1.2.2"
+        versionCode = 10
+        versionName = "1.2.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

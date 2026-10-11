@@ -2,10 +2,10 @@
 
 | | |
 |---|---|
-| **Spec version** | 1.2.2 |
-| **App version at this spec** | versionName `1.2.2` / versionCode `7` |
+| **Spec version** | 1.2.5 |
+| **App version at this spec** | versionName `1.2.5` / versionCode `10` |
 | **Package** | `com.satya.a12andriodtester` |
-| **Last updated** | 2026-10-04 |
+| **Last updated** | 2026-10-11 |
 | **Status** | Approved v1 scope — remaining questions in §14 |
 
 > **This file is the source of truth.** Every feature or code change must be checked against this spec first.
@@ -109,7 +109,7 @@ Users can have **multiple requests active at the same time**. Requests are group
 ### 5.2 Welcome / Onboarding
 - Shown on first launch (before login).
 - Explains the full plan: what the service is, the steps, timelines (14-day testing), what the user must do, reply times, refunds, and the final report.
-- First page leads with the core promise: **"Production-ready in 14–15 days"** — not a tester swap; we provide 12 dedicated testers.
+- First page leads with the core promise: **"Real testing, real feedback"** — 12 dedicated testers actually use the app over 14 days and report bugs, crashes and UX issues; not a tester swap.
 - Swipeable pages; "Skip" and "Get Started".
 - Always re-openable from **Help** (§5.9).
 
@@ -155,7 +155,7 @@ The same form is used to **edit and resubmit** when the request is in `NEEDS_INF
 
 ### 5.9 Help
 - Re-open welcome/onboarding guide.
-- FAQ (incl. refund rule), contact support email, app version.
+- FAQ (incl. refund rule, what the testers do, and that production access is not guaranteed), contact support email, app version, **Privacy policy** link (§10).
 
 ### 5.10 Profile
 - Name, email, WhatsApp number (editable), sign out, delete account (Play policy requirement).
@@ -233,14 +233,14 @@ config/app                                     (admin-editable, readable by sign
 ## 10. Security & Privacy
 - Firestore/Storage rules: users read/write only their own data; admin reads all; status transitions restricted by role.
 - No secrets in the APK. The GitHub repo is **public**: `google-services.json`, signing keys, `functions/.env.*` (admin emails), `SPEC.internal.md` and the demo password are never committed.
-- Privacy policy + data safety form required for Play Store.
+- **Privacy policy:** `docs/privacy-policy.html`, served by GitHub Pages at `https://pradeepg21.github.io/12AndriodTester/privacy-policy.html` (Pages source: `main` branch, `/docs`). Linked from Help (§5.9) and the Play listing. Update it whenever data collection, sharing or retention changes; the Play Data safety form must match it.
 - Account deletion supported (callable function deletes the auth account, marks profile deleted; request records kept for audit).
 
 ## 11. Design Guidelines
 - **App name:** **Twelve Testers** (Play title: "Twelve Testers: Closed Testing"). Never use "Android" or "Google" in the app name or icon (Google brand rules).
 - **Icon:** 12 white dots in a ring (twelve testers) around a check mark (test passed) on the indigo → violet → pink brand gradient. Single source: `store-listing/src/make_icon.py` generates the launcher, monochrome, notification and Play Store icons.
 - **Store listing assets** (icon, feature graphic, phone/tablet screenshots, promo video, listing text) live in `store-listing/`; listing copy in `store-listing/listing.md`.
-- **Core message** (listing, feature graphic, video, onboarding): *Not a tester swap — 12 real testers, production-ready in 14–15 days.* Never promise that Google will approve production access.
+- **Core message** (listing, feature graphic, video, onboarding): *Real testing, real feedback — 12 real testers actually use your app for 14 days. Not a tester swap.* Present the service as genuine testing with real feedback (Play policy). Never word it as a way to "unlock", "bypass" or merely satisfy the 12-tester requirement, and never promise that Google will approve production access.
 - Professional, **colourful** Material 3 look: vibrant indigo/violet/teal palette, gradient headers, rounded cards, colour-coded status chips, icons on every step.
 - Light and dark theme.
 - Edge-to-edge: bottom buttons, the New Request button and list ends always sit above the system navigation bar (3-button or gesture).
@@ -256,7 +256,12 @@ config/app                                     (admin-editable, readable by sign
 3. **Every code change bumps the app version** in `app/build.gradle.kts`:
    - `versionCode` +1 (always)
    - `versionName` semantic: `MAJOR.MINOR.PATCH` — PATCH for fixes, MINOR for features, MAJOR for breaking/flow changes.
+   - The new `versionCode` must be **higher than the highest code ever uploaded to Play Console** (see below), not just +1 on the file — Play rejects any reused code.
 4. Add an entry to the Change Log below.
+5. Keep the header table (top of this file) in sync with `app/build.gradle.kts`.
+6. After uploading a build to Play Console, update **Last versionCode uploaded to Play** below.
+
+**Last versionCode uploaded to Play:** `7` (versionName 1.2.2) — next upload must use `8` or higher.
 
 ## 14. Decisions & Open Questions
 
@@ -268,9 +273,12 @@ config/app                                     (admin-editable, readable by sign
 - Multiple active requests per user: yes, grouped into tabs (§4.1).
 - Support email: `supportandroidtester@gmail.com`.
 
+**Decided (2026-10-11):**
+- Keep the manual UPI QR (not Play Billing): the service is real-world testing performed by people outside the app. If Play review rejects it under the Payments policy, add Play Billing for the fee.
+
 **Still open:**
-- Google Play policy check on taking this payment outside Play Billing (before publishing).
-- Privacy policy / terms URLs.
+- Google Play policy check on taking this payment outside Play Billing — confirmed only once Play review passes.
+- Terms of service URL (privacy policy done — §10).
 
 ## 15. Change Log
 
@@ -283,3 +291,6 @@ config/app                                     (admin-editable, readable by sign
 | 2026-10-03 | 1.2.0 | 1.2.0 / 5 | Renamed to **Twelve Testers**; new original icon (12-dot ring + check) replacing the Android robot; Play app-signing & upload key SHA-1s registered in Firebase. Store listing assets added under `store-listing/`. |
 | 2026-10-03 | 1.2.1 | 1.2.1 / 6 | Whitespace stripped from email / package name / opt-in link fields (keyboard auto-space after "." bug); onboarding page 1 leads with "Production-ready in 14–15 days — not a tester swap". Store listing text, feature graphic, phone + 7"/10" tablet screenshots and a 42 s promo video (landscape + vertical) generated by scripts in `store-listing/src`. |
 | 2026-10-04 | 1.2.2 | 1.2.2 / 7 | Fix: bottom buttons hidden by the system navigation bar — New Request FAB now sits above it; Submit / Pay / Save buttons no longer squashed (inset padding moved outside their fixed height); request, user and audit lists pad their last item above the bar. |
+| 2026-10-05 | 1.2.3 | 1.2.3 / 8 | versionCode 7 already used in Play Console → bumped to 8. Live UPI payment config set (QR image, UPI ID, payee) in `config/app`. §13 now tracks the last versionCode uploaded to Play. |
+| 2026-10-11 | 1.2.4 | 1.2.4 / 9 | Play-policy wording: core message is now "Real testing, real feedback" (onboarding page 1, store listing, feature graphic, screenshot and video captions) instead of "Production-ready in 14–15 days". New FAQs: what the testers do; production access not guaranteed. Decided to keep the UPI QR payment (§14). |
+| 2026-10-11 | 1.2.5 | 1.2.5 / 10 | Privacy policy added (`docs/privacy-policy.html`, GitHub Pages); "Privacy policy" button in Help → About; URL set in the store listing. |
